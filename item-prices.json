@@ -1,0 +1,26 @@
+{
+    "A": {
+        "sku": "A",
+        "price": 50,
+        "multiPrice": 130,
+        "multiPriceQty": 3
+    },
+    "B":{
+        "sku": "B",
+        "price": 30,
+        "multiPrice": 45,
+        "multiPriceQty": 2
+    },
+    "C": {
+        "sku": "C",
+        "price": 20,
+        "multiPrice": 0,
+        "multiPriceQty": 0
+    },
+    "D": {
+        "sku": "D",
+        "price": 15,
+        "multiPrice": 0,
+        "multiPriceQty": 0
+    }
+}    

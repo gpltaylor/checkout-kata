@@ -1,5 +1,12 @@
 package main
 
+import (
+	"encoding/json"
+	"log"
+	"os"
+	"path/filepath"
+)
+
 type ICheckout interface {
 	Scan(item string)
 	GetTotalPrice() int
@@ -12,10 +19,10 @@ type Checkout struct {
 }
 
 type ItemPrice struct {
-	sku           string
-	price         int
-	multiPrice    int
-	multiPriceQty int
+	Sku           string `json:"sku"`
+	Price         int    `json:"price"`
+	MultiPrice    int    `json:"multiPrice"`
+	MultiPriceQty int    `json:"multiPriceQty"`
 }
 
 func (c *Checkout) Scan(item string) {
@@ -30,23 +37,40 @@ func (c *Checkout) GetTotalPrice() int {
 	// Return the total price including the discount
 	for sku, qty := range c.basket {
 		itemPrice := c.ItemPrices[sku]
-		if itemPrice.multiPrice > 0 && qty >= itemPrice.multiPriceQty {
-			c.totalPrice += (qty/itemPrice.multiPriceQty)*itemPrice.multiPrice + (qty%itemPrice.multiPriceQty)*itemPrice.price
+		if itemPrice.MultiPrice > 0 && qty >= itemPrice.MultiPriceQty {
+			c.totalPrice += (qty/itemPrice.MultiPriceQty)*itemPrice.MultiPrice + (qty%itemPrice.MultiPriceQty)*itemPrice.Price
 		} else {
-			c.totalPrice += qty * itemPrice.price
+			c.totalPrice += qty * itemPrice.Price
 		}
 	}
 	return c.totalPrice
 }
 
 func NewCheckout() ICheckout {
+	ItemPrices := make(map[string]ItemPrice)
+
+	// Read JSON file and populate the ItemPrices map
+	cwd, err := os.Getwd()
+	if err != nil {
+		log.Fatal(err)
+		panic(err)
+	}
+
+	file, err := os.Open(filepath.Join(cwd, "item-prices.json"))
+	if err != nil {
+		log.Fatal(err)
+		panic(err)
+	}
+
+	defer file.Close()
+
+	decoder := json.NewDecoder(file)
+	if err := decoder.Decode(&ItemPrices); err != nil {
+		log.Fatal(err)
+		panic(err)
+	}
+
 	return &Checkout{
-		// TODO: Load from Redis or something (Dapr state store?)
-		ItemPrices: map[string]ItemPrice{
-			"A": {"A", 50, 130, 3},
-			"B": {"B", 30, 45, 2},
-			"C": {"C", 20, 0, 0},
-			"D": {"D", 15, 0, 0},
-		},
+		ItemPrices: ItemPrices,
 	}
 }
