@@ -22,3 +22,24 @@ interface ICheckout
     int GetTotalPrice();
 }
 ```
+
+## Implementation
+A Checkout implementing the above Interface has been created. This will allow DI to load into any application and use the Checkout.
+
+## Arch
+This is a simple online test so it's fine to place all items in root.
+
+Based on the Product Owner requirements, business requirements and solutions architecture, the product structure would change.
+
+- pkg folder
+- cmd folder
+- internal folder
+- api folder
+- web folder
+
+### Data
+The data would not be stored within a File :) 
+This would be load using Redis Cache with a set TTL. Using something like Dapr to load this into the microservice arch.
+
+I hope this is enough to highlist the basics... there is a LOT mroe I would do here but I was told to only put a few hours into this.
+
