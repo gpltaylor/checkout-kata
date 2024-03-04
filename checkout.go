@@ -28,6 +28,14 @@ func (c *Checkout) Scan(item string) {
 
 func (c *Checkout) GetTotalPrice() int {
 	// Return the total price including the discount
+	for sku, qty := range c.basket {
+		itemPrice := c.ItemPrices[sku]
+		if itemPrice.multiPrice > 0 && qty >= itemPrice.multiPriceQty {
+			c.totalPrice += (qty/itemPrice.multiPriceQty)*itemPrice.multiPrice + (qty%itemPrice.multiPriceQty)*itemPrice.price
+		} else {
+			c.totalPrice += qty * itemPrice.price
+		}
+	}
 	return c.totalPrice
 }
 
