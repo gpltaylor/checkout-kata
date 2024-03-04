@@ -44,3 +44,11 @@ func TestCalculateBasket(t *testing.T) {
 		}
 	}
 }
+
+func BenchmarkCheckout(b *testing.B) {
+	checkout := NewCheckout()
+	for i := 0; i < b.N; i++ {
+		checkout.Scan("ABCDABCDABCDABCDABCDABCDABCDABCDABCDABCDABCDABCDABCDABCDABCD")
+		checkout.GetTotalPrice()
+	}
+}
